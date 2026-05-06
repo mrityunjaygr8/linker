@@ -53,7 +53,54 @@ mod tests {
 
     #[test]
     fn test_store_list() {
-        let mut _store = Store::new();
-        let _link = Link::new("http://google.com").unwrap();
+        let mut store = Store::new();
+        let link = Link::new("http://google.com").unwrap();
+
+        store.add(&link);
+        let list = store.list();
+        assert_eq!(list, [link]);
+    }
+
+    #[test]
+    fn test_store_get() {
+        let mut store = Store::new();
+        let link = Link::new("http://google.com").unwrap();
+
+        store.add(&link);
+        let id = store.links.first().unwrap().id.clone();
+        let got = store.get(id).unwrap();
+        assert_eq!(got, &link);
+    }
+    #[test]
+    fn test_store_get_miss() {
+        let mut store = Store::new();
+        let link = Link::new("http://google.com").unwrap();
+
+        store.add(&link);
+        let id = "woo-123".to_string();
+        let got = store.get(id);
+        assert_eq!(got, None);
+    }
+
+    #[test]
+    fn test_store_delete() {
+        let mut store = Store::new();
+        let link = Link::new("http://google.com").unwrap();
+
+        store.add(&link);
+        let id = store.links.first().unwrap().id.clone();
+
+        store.delete(id);
+        assert_eq!(store.links.first().unwrap().deleted, true)
+    }
+    #[test]
+    fn test_store_delete_missing() {
+        let mut store = Store::new();
+        let link = Link::new("http://google.com").unwrap();
+
+        store.add(&link);
+        let id = "woo-123".to_string();
+
+        store.delete(id);
     }
 }
