@@ -20,7 +20,7 @@ impl Display for LinkError {
     }
 }
 
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq)]
 pub struct Link {
     pub id: String,
     pub url: ParsedURL,
@@ -35,7 +35,7 @@ impl Display for Link {
 }
 
 impl Link {
-    pub fn new(url: String) -> Result<Self, LinkError> {
+    pub fn new(url: &'static str) -> Result<Self, LinkError> {
         let url_parsed = match url.try_into() {
             Ok(u) => u,
             Err(e) => return Err(LinkError::URLError(e)),
@@ -57,9 +57,9 @@ mod tests {
 
     #[test]
     fn test_link_creation() {
-        let text = "http://google.com".to_string();
-        let link = Link::new(text.clone()).unwrap();
-        let url = ParsedURL::parse(text.clone()).unwrap();
+        let text = "http://google.com";
+        let link = Link::new(text).unwrap();
+        let url = ParsedURL::parse(text).unwrap();
 
         assert_eq!(link.deleted, false);
         assert_eq!(link.url, url);
@@ -73,8 +73,8 @@ mod tests {
 
     #[test]
     fn test_link_invalid() {
-        let text = "google.com".to_string();
-        let link_err = Link::new(text.clone()).unwrap_err();
+        let text = "google.com";
+        let link_err = Link::new(text).unwrap_err();
         assert_eq!(
             link_err,
             LinkError::URLError(URLParseError::NotValidError(text))
@@ -83,15 +83,15 @@ mod tests {
 
     #[test]
     fn test_link_error_display() {
-        let text = "google.com".to_string();
-        let err = LinkError::URLError(URLParseError::NotValidError(text.clone()));
+        let text = "google.com";
+        let err = LinkError::URLError(URLParseError::NotValidError(text));
         assert_eq!(err.to_string(), format!("{}: URL is not valid", text));
     }
 
     #[test]
     fn test_link_display() {
-        let text = "http://google.com".to_string();
-        let link = Link::new(text.clone()).unwrap();
+        let text = "http://google.com";
+        let link = Link::new(text).unwrap();
         let binding = link.to_string();
         let mut formatted = binding.split(": ");
         let id_part = formatted.next().unwrap();

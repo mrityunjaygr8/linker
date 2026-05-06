@@ -4,7 +4,7 @@ use url::Url;
 
 #[derive(Debug, PartialEq)]
 pub enum URLParseError {
-    NotValidError(String),
+    NotValidError(&'static str),
 }
 
 impl Display for URLParseError {
@@ -16,11 +16,11 @@ impl Display for URLParseError {
 }
 
 #[derive(Debug, Default, Clone, PartialEq)]
-pub struct ParsedURL(String);
+pub struct ParsedURL(&'static str);
 impl ParsedURL {
-    pub fn parse(value: String) -> Result<Self, URLParseError> {
-        Url::parse(&value)
-            .map_err(|_| URLParseError::NotValidError(value.clone()))
+    pub fn parse(value: &'static str) -> Result<Self, URLParseError> {
+        Url::parse(value)
+            .map_err(|_| URLParseError::NotValidError(value))
             .map(|_| Self(value))
     }
 }
@@ -30,10 +30,9 @@ impl Display for ParsedURL {
         write!(f, "{}", self.0)
     }
 }
-
-impl TryFrom<String> for ParsedURL {
+impl TryFrom<&'static str> for ParsedURL {
     type Error = URLParseError;
-    fn try_from(value: String) -> Result<Self, Self::Error> {
+    fn try_from(value: &'static str) -> Result<Self, Self::Error> {
         ParsedURL::parse(value)
     }
 }
@@ -44,26 +43,26 @@ mod tests {
 
     #[test]
     fn test_url_parse_correct() {
-        let text = "http://google.com".to_string();
-        let url = ParsedURL::parse(text.clone());
+        let text = "http://google.com";
+        let url = ParsedURL::parse(text);
         let parsed = url.unwrap();
         assert_eq!(text, parsed.0)
     }
 
     #[test]
     fn test_url_parse_fail() {
-        let text = "test.com".to_string();
-        let url = ParsedURL::parse(text.clone());
+        let text = "test.com";
+        let url = ParsedURL::parse(text);
 
         let err = url.unwrap_err();
-        let expected_error = URLParseError::NotValidError(text.clone());
+        let expected_error = URLParseError::NotValidError(text);
         assert_eq!(err, expected_error);
     }
 
     #[test]
     fn test_url_from_string() {
-        let text = "http://test.com".to_string();
-        let expected = ParsedURL { 0: text.clone() };
+        let text = "http://test.com";
+        let expected = ParsedURL { 0: text };
 
         let tested: ParsedURL = text.try_into().unwrap();
         assert_eq!(expected, tested);
@@ -71,8 +70,8 @@ mod tests {
 
     #[test]
     fn test_url_parse_error_display() {
-        let text = "test.com".to_string();
-        let e = URLParseError::NotValidError(text.clone());
+        let text = "test.com";
+        let e = URLParseError::NotValidError(text);
         assert_eq!(e.to_string(), format!("{}: URL is not valid", text))
     }
 }
