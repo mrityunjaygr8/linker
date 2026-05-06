@@ -15,6 +15,13 @@ impl Display for URLParseError {
     }
 }
 
+/// Struct used to represent a valid URL.
+/// Inspired from <https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/>
+/// URLs are parsed via the url crate
+/// ```
+/// let text = "http://google.com";
+/// let url = linker::ParsedURL::parse(text).unwrap();
+/// ```
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct ParsedURL(&'static str);
 impl ParsedURL {
