@@ -73,6 +73,6 @@ mod tests {
     fn test_url_parse_error_display() {
         let text = "test.com".to_string();
         let e = URLParseError::NotValidError(text.clone());
-        assert_eq!(format!("{}", e), format!("{}: URL is not valid", text))
+        assert_eq!(e.to_string(), format!("{}: URL is not valid", text))
     }
 }
