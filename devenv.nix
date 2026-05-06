@@ -7,9 +7,11 @@
 }: {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
+  env.LLVM_COV = "${pkgs.llvm}/bin/llvm-cov";
+  env.LLVM_PROFDATA = "${pkgs.llvm}/bin/llvm-profdata";
 
   # https://devenv.sh/packages/
-  packages = [pkgs.git];
+  packages = with pkgs; [cargo-llvm-cov llvm];
 
   # https://devenv.sh/languages/
   languages.rust.enable = true;
