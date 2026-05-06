@@ -29,7 +29,7 @@ impl Store {
     }
 
     pub fn get(&self, id: String) -> Option<&Link> {
-        self.links.iter().find(|e| e.id == id)
+        self.links.iter().find(|e| e.id == id && e.deleted == false)
     }
 }
 
@@ -70,6 +70,19 @@ mod tests {
         let id = store.links.first().unwrap().id.clone();
         let got = store.get(id).unwrap();
         assert_eq!(got, &link);
+    }
+    #[test]
+    fn test_store_get_deleted_none() {
+        let mut store = Store::new();
+        let link = Link::new("http://google.com").unwrap();
+
+        store.add(&link);
+        let id = store.links.first().unwrap().id.clone();
+        let got = store.get(id.clone()).unwrap();
+        assert_eq!(got, &link);
+        store.delete(id.clone());
+        let got = store.get(id);
+        assert_eq!(got, None);
     }
     #[test]
     fn test_store_get_miss() {
