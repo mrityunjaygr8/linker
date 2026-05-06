@@ -1,9 +1,4 @@
-use crate::{in_memory_store::Store, link::Link};
-
-mod id;
-mod in_memory_store;
-mod link;
-mod url;
+use linker::{Link, Store};
 
 fn main() {
     let links = [
