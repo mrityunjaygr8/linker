@@ -27,12 +27,6 @@
     echo hello from $GREET
   '';
 
-  # https://devenv.sh/basics/
-  enterShell = ''
-    hello         # Run scripts directly
-    git --version # Use packages
-  '';
-
   # https://devenv.sh/tasks/
   # tasks = {
   #   "myproj:setup".exec = "mytool build";
@@ -46,7 +40,12 @@
   '';
 
   # https://devenv.sh/git-hooks/
-  # git-hooks.hooks.shellcheck.enable = true;
+  git-hooks.hooks = {
+    shellcheck.enable = true;
+    cargo-check.enable = true;
+    rustfmt.enable = true;
+    clippy.enable = true;
+  };
 
   # See full reference at https://devenv.sh/reference/options/
 }
