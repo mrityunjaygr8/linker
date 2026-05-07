@@ -11,7 +11,7 @@
   env.LLVM_PROFDATA = "${pkgs.llvm}/bin/llvm-profdata";
 
   # https://devenv.sh/packages/
-  packages = with pkgs; [cargo-llvm-cov llvm];
+  packages = with pkgs; [cargo-llvm-cov llvm cargo-watch];
 
   # https://devenv.sh/languages/
   languages.rust.enable = true;
