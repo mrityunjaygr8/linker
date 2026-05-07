@@ -7,8 +7,11 @@ use crate::{
     url::{ParsedURL, URLParseError},
 };
 
+/// Enum for the Link Creation Errors
 #[derive(Debug, PartialEq)]
 pub enum LinkError {
+    /// When the passed URL is invalid.  
+    /// Uses [crate::url::URLParseError] underneath.  
     URLError(URLParseError),
 }
 
@@ -20,11 +23,16 @@ impl Display for LinkError {
     }
 }
 
+/// Struct for the links
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct Link {
+    /// ID for the link
     pub id: String,
+    /// The actual URL
     pub url: ParsedURL,
+    /// When the link was created, will be used for auto expiry
     _created: DateTime<Utc>,
+    /// Track if the link has been deleted
     pub deleted: bool,
 }
 
@@ -35,6 +43,12 @@ impl Display for Link {
 }
 
 impl Link {
+    /// Take a static string, convert to ParsedURL.  
+    /// If the generated ID already exists for another link, it will be regenerated.  
+    /// Example
+    /// ```
+    /// let a = linker::Link::new("http://google.com").unwrap();
+    /// ```
     pub fn new(url: &'static str) -> Result<Self, LinkError> {
         let url_parsed = match url.try_into() {
             Ok(u) => u,

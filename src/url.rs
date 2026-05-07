@@ -2,8 +2,11 @@ use std::fmt::Display;
 
 use url::Url;
 
+/// Error Enum for parsing URLs
 #[derive(Debug, PartialEq)]
 pub enum URLParseError {
+    /// The passed URL is an invalid URL.  
+    /// Has a static str reference for holding the passed URL  
     NotValidError(&'static str),
 }
 
